@@ -1,0 +1,43 @@
+version: "3.8"
+services:
+
+    webserver-nginx:
+        build:
+            context: ./app/docker
+            dockerfile: nginx.docker
+        volumes:
+            - ./app/study-webinar:/var/www/app
+        ports:
+            - "8081:80"
+
+    symfony-php-fpm:
+        container_name:  symfony-php
+        build:
+            context: ./app/docker
+            dockerfile: php-fpm.docker
+        volumes:
+            - ./app/study-webinar:/var/www/app
+
+    api-php-cli:
+        build:
+            context: ./app/docker
+            dockerfile: php-cli.docker
+        volumes:
+            - ./app:/var/www/app
+        working_dir: /var/www/app
+        tty: true
+    db:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: example
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+        - 8080:8080
+
+        # system: PostgreSql
+        # DB: study_webinar
+        # user: postgres
+        # pas: example
